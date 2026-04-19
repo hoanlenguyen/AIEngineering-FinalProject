@@ -2,13 +2,16 @@
 
 **Course:** AI Engineering (IC00BD87-3001)
 **Student name(s) + Student IDs:** 
+---
 Hoan Le
 Hoan.Le@student.oulu.fi
 Student number: 2504960 
 ---
 Khoa Dinh
 t0dida00@students.oamk.fi
+Student number: 1224656 
 ---
+Van Nguyen
 
 ## 1. Project Name
 
