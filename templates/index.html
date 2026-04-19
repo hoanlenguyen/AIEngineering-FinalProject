@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSentinel — AI Code Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Input Controls -->
+        <div class="left-panel">
+            <h1>CodeSentinel</h1>
+            <p class="subtitle">AI-Powered Multi-Language Code Review</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="inline">Inline</button>
+                <button class="tab-btn" data-tab="file">File</button>
+                <button class="tab-btn" data-tab="project">Project</button>
+            </div>
+
+            <!-- Inline Tab -->
+            <div id="inline" class="tab-content active">
+                <label>Paste your code:</label>
+                <textarea id="inline-code" rows="15" placeholder="Paste code here..."></textarea>
+
+                <label>Language (optional):</label>
+                <select id="inline-language">
+                    <option value="auto">Auto-detect</option>
+                    <option value="Python">Python</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="TypeScript">TypeScript</option>
+                    <option value="Java">Java</option>
+                    <option value="C#">C#</option>
+                    <option value="Go">Go</option>
+                    <option value="Rust">Rust</option>
+                    <option value="Ruby">Ruby</option>
+                    <option value="PHP">PHP</option>
+                    <option value="Kotlin">Kotlin</option>
+                    <option value="Swift">Swift</option>
+                    <option value="C++">C++</option>
+                    <option value="SQL">SQL</option>
+                    <option value="Shell">Shell</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- File Tab -->
+            <div id="file" class="tab-content">
+                <label>Select a file:</label>
+                <input type="file" id="file-input">
+
+                <label>Language (optional):</label>
+                <select id="file-language">
+                    <option value="auto">Auto-detect</option>
+                    <option value="Python">Python</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="TypeScript">TypeScript</option>
+                    <option value="Java">Java</option>
+                    <option value="C#">C#</option>
+                    <option value="Go">Go</option>
+                    <option value="Rust">Rust</option>
+                    <option value="Ruby">Ruby</option>
+                    <option value="PHP">PHP</option>
+                    <option value="Kotlin">Kotlin</option>
+                    <option value="Swift">Swift</option>
+                    <option value="C++">C++</option>
+                    <option value="SQL">SQL</option>
+                    <option value="Shell">Shell</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Project Tab -->
+            <div id="project" class="tab-content">
+                <label>Project folder path:</label>
+                <input type="text" id="project-path" placeholder="/path/to/project">
+                <p class="helper-text">Enter an absolute path to a project folder on this machine.</p>
+                <p class="warning-text">⚠ Only the first 20 source files will be reviewed.</p>
+            </div>
+
+            <!-- Review Button -->
+            <button id="review-btn" class="review-btn">
+                <span class="btn-text">Review</span>
+                <span class="spinner hidden"></span>
+            </button>
+        </div>
+
+        <!-- Right Panel: Progress & Results -->
+        <div class="right-panel">
+            <!-- Progress Strip -->
+            <div id="progress-strip" class="progress-strip hidden">
+                <div class="steps">
+                    <div class="step" data-step="Detecting Language">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Detecting Language</div>
+                    </div>
+                    <div class="step" data-step="Bug_Detector">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Bug Detector</div>
+                    </div>
+                    <div class="step" data-step="Style_Checker">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Style Checker</div>
+                    </div>
+                    <div class="step" data-step="Security_Auditor">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Security Auditor</div>
+                    </div>
+                    <div class="step" data-step="Summarizing">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Summarizing</div>
+                    </div>
+                </div>
+                <p id="progress-text" class="progress-text">Initializing...</p>
+            </div>
+
+            <!-- Results Area -->
+            <div id="results-area" class="results-area hidden">
+                <!-- Verdict Badge -->
+                <div id="verdict-badge" class="verdict-badge"></div>
+
+                <!-- Report -->
+                <div id="report-content" class="report-content"></div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="download-btn" class="action-btn download-btn">Download Report</button>
+                    <button id="new-review-btn" class="action-btn new-review-btn">New Review</button>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state">
+                <p>Select code, upload a file, or enter a project path to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inlineTab = document.querySelector('[data-tab="inline"]');
+        const fileTab = document.querySelector('[data-tab="file"]');
+        const projectTab = document.querySelector('[data-tab="project"]');
+
+        const inlineCode = document.getElementById('inline-code');
+        const inlineLanguage = document.getElementById('inline-language');
+        const fileInput = document.getElementById('file-input');
+        const fileLanguage = document.getElementById('file-language');
+        const projectPath = document.getElementById('project-path');
+        const reviewBtn = document.getElementById('review-btn');
+        const progressStrip = document.getElementById('progress-strip');
+        const progressText = document.getElementById('progress-text');
+        const resultsArea = document.getElementById('results-area');
+        const reportContent = document.getElementById('report-content');
+        const verdictBadge = document.getElementById('verdict-badge');
+        const downloadBtn = document.getElementById('download-btn');
+        const newReviewBtn = document.getElementById('new-review-btn');
+        const emptyState = document.getElementById('empty-state');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        let currentTab = 'inline';
+        let eventSource = null;
+
+        // Tab switching
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                document.getElementById(currentTab).classList.add('active');
+            });
+        });
+
+        // Review button
+        reviewBtn.addEventListener('click', async () => {
+            if (currentTab === 'inline') {
+                await reviewInline();
+            } else if (currentTab === 'file') {
+                await reviewFile();
+            } else if (currentTab === 'project') {
+                await reviewProject();
+            }
+        });
+
+        async function reviewInline() {
+            const code = inlineCode.value.trim();
+            if (!code) {
+                alert('Please paste some code');
+                return;
+            }
+
+            const payload = {
+                code: code,
+                language: inlineLanguage.value
+            };
+
+            await runReview('/review/inline', payload);
+        }
+
+        async function reviewFile() {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('language', fileLanguage.value);
+
+            // Disable button and show progress
+            reviewBtn.disabled = true;
+            reviewBtn.querySelector('.btn-text').classList.add('hidden');
+            reviewBtn.querySelector('.spinner').classList.remove('hidden');
+            progressStrip.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            progressText.textContent = 'Initializing...';
+
+            // Stream progress
+            streamProgress();
+
+            try {
+                const response = await fetch('/review/file', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Review failed');
+                    return;
+                }
+
+                displayResults(data);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                stopProgress();
+                reviewBtn.disabled = false;
+                reviewBtn.querySelector('.btn-text').classList.remove('hidden');
+                reviewBtn.querySelector('.spinner').classList.add('hidden');
+            }
+        }
+
+        async function reviewProject() {
+            const path = projectPath.value.trim();
+            if (!path) {
+                alert('Please enter a project path');
+                return;
+            }
+
+            const payload = { path: path };
+
+            await runReview('/review/project', payload);
+        }
+
+        async function runReview(endpoint, payload) {
+            // Disable button and show progress
+            reviewBtn.disabled = true;
+            reviewBtn.querySelector('.btn-text').classList.add('hidden');
+            reviewBtn.querySelector('.spinner').classList.remove('hidden');
+            progressStrip.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            progressText.textContent = 'Initializing...';
+
+            // Stream progress
+            streamProgress();
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Review failed');
+                    return;
+                }
+
+                displayResults(data);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                stopProgress();
+                reviewBtn.disabled = false;
+                reviewBtn.querySelector('.btn-text').classList.remove('hidden');
+                reviewBtn.querySelector('.spinner').classList.add('hidden');
+            }
+        }
+
+        function streamProgress() {
+            if (eventSource) eventSource.close();
+
+            eventSource = new EventSource('/progress');
+
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateProgressStrip(data);
+
+                if (data.step === 'complete') {
+                    stopProgress();
+                }
+            };
+
+            eventSource.onerror = () => {
+                stopProgress();
+            };
+        }
+
+        function stopProgress() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
+        }
+
+        function updateProgressStrip(data) {
+            const { step, status } = data;
+            progressText.textContent = `${step}...`;
+
+            if (step === 'complete') {
+                progressStrip.classList.add('hidden');
+                return;
+            }
+
+            // Update step circles
+            document.querySelectorAll('.step').forEach(stepEl => {
+                const stepName = stepEl.dataset.step;
+                const circle = stepEl.querySelector('.step-circle');
+
+                if (step.includes(stepName) || step === stepName) {
+                    circle.textContent = status === 'done' ? '✓' : '⟳';
+                    stepEl.classList.add('running');
+                    if (status === 'done') {
+                        stepEl.classList.add('done');
+                    }
+                } else if (stepEl.classList.contains('done')) {
+                    // Already done
+                } else {
+                    stepEl.classList.remove('running');
+                }
+            });
+        }
+
+        function displayResults(data) {
+            progressStrip.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            // Render markdown
+            const html = marked.parse(data.report);
+            reportContent.innerHTML = html;
+
+            // Display verdict badge
+            const verdict = data.verdict;
+            let verdictClass = 'pass';
+            let verdictText = '🟢 PASS';
+
+            if (verdict === 'PASS WITH NOTES') {
+                verdictClass = 'pass-with-notes';
+                verdictText = '🟡 PASS WITH NOTES';
+            } else if (verdict === 'NEEDS REVISION') {
+                verdictClass = 'needs-revision';
+                verdictText = '🔴 NEEDS REVISION';
+            }
+
+            verdictBadge.className = `verdict-badge ${verdictClass}`;
+            verdictBadge.textContent = verdictText;
+        }
+
+        function showError(message) {
+            alert(`Error: ${message}`);
+            progressStrip.classList.add('hidden');
+            resultsArea.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+        }
+
+        // Download button
+        downloadBtn.addEventListener('click', () => {
+            window.location.href = '/download';
+        });
+
+        // New review button
+        newReviewBtn.addEventListener('click', () => {
+            inlineCode.value = '';
+            fileInput.value = '';
+            projectPath.value = '';
+            inlineLanguage.value = 'auto';
+            fileLanguage.value = 'auto';
+            resultsArea.classList.add('hidden');
+            progressStrip.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            tabBtns[0].click();
+        });
+    </script>
+</body>
+</html>
