@@ -18,7 +18,8 @@ Student number: 2506205
 ## 1. Project Name
 
 **CodeSentinel** — A Multi-Agent, Multi-Language Code Review Assistant with Web UI
-
+Project link: 
+https://github.com/hoanlenguyen/AIEngineering-FinalProject
 ---
 
 ## 2. How to Run the Project
@@ -163,7 +164,7 @@ The primary goal is to help developers and students quickly identify bugs, style
 
 ## 6. Is There a Human in the Loop?
 
-**Yes — via the UI.**
+**Yes — Human interaction via the UI.**
 
 The human provides the input (code snippet, file upload, or folder path) through the browser interface and can optionally override the detected language. Once the review is submitted, the system runs fully automatically. The human reads the rendered report and acts on the findings. There is no approval or intervention step within the agent pipeline itself.
 
