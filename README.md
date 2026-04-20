@@ -9,9 +9,11 @@ Student number: 2504960
 ---
 Khoa Dinh
 t0dida00@students.oamk.fi
-Student number: 1224656 
+Student number: 2508783 
 ---
 Van Nguyen
+Van.M.Nguyen@student.oulu.fi
+Student number: 2506205
 
 ## 1. Project Name
 
