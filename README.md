@@ -272,4 +272,4 @@ A reflection or debate pattern was considered but rejected — code review sub-t
 ## Declaration of Use of AI
 
 - **Code:** GitHub Copilot was used for boilerplate and autocomplete. Claude (claude.ai) was used to generate initial agent system prompt templates, the Flask route structure, and the `CLAUDE.md` project instruction file — all manually reviewed and refined.
-- **Report:** This report was drafted with assistance from Claude (claude.ai) based on project description, architecture decisions, and the course-provided template. All content was reviewed and edited by the student.
+- **Report:** This report was drafted with assistance from Claude (claude.ai) based on project description, architecture decisions. All content was reviewed and edited by the students.
