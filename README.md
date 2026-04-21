@@ -15,7 +15,7 @@ CodeSentinel is a multi-agent code review assistant that analyzes source code fo
 - AG2 / AutoGen
 - OpenAI-compatible client
 - Server-Sent Events (SSE) for live progress updates
-- HTML, CSS, and JavaScript for the frontend
+- HTML, CSS for the frontend
 
 ## Features
 
