@@ -67,8 +67,13 @@ Set these values in `.env`:
 
 ```env
 LLM_BASE_URL=your_base_url_here
-LLM_MODEL=your_model_here
-LLM_API_KEY=your_api_key_here
+```
+
+The model and API key are defined in code:
+
+```text
+model: openai/gpt-4.1-mini
+api_key: no-key
 ```
 
 ## How to Build and Run

@@ -237,15 +237,16 @@ COMMON_EXTENSIONS = {
 - Cap at 20 files
 
 ## API Configuration
-- Load `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` from `.env`
+- Load `LLM_BASE_URL` from `.env`
+- Keep `model` and `api_key` in code
 
 ## LLM Config (AG2)
 ```python
 LLM_CONFIG = {
     "config_list": [{
-        "model": os.getenv("LLM_MODEL"),
+        "model": "openai/gpt-4.1-mini",
         "base_url": os.getenv("LLM_BASE_URL"),
-        "api_key": os.getenv("LLM_API_KEY", "no-key")
+        "api_key": "no-key"
     }],
     "cache_seed": None
 }

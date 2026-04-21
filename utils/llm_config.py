@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-LLM_MODEL = os.getenv("LLM_MODEL")
 LLM_BASE_URL = os.getenv("LLM_BASE_URL")
-LLM_API_KEY = os.getenv("LLM_API_KEY", "no-key")
+LLM_MODEL = "openai/gpt-4.1-mini"
+LLM_API_KEY = "no-key"
 
-if not LLM_MODEL or not LLM_BASE_URL:
-    raise ValueError("Missing required LLM environment variables: LLM_MODEL and LLM_BASE_URL")
+if not LLM_BASE_URL:
+    raise ValueError("Missing required LLM environment variable: LLM_BASE_URL")
 
 
 LLM_CONFIG = {
