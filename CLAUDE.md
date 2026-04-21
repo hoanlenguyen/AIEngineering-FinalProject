@@ -237,17 +237,15 @@ COMMON_EXTENSIONS = {
 - Cap at 20 files
 
 ## API Configuration
-- **Base URL:** `https://5f5832nb90.execute-api.eu-central-1.amazonaws.com/v1`
-- **Model:** `openai/gpt-4.1-mini`
-- **API key:** `no-key` — always pass directly, never use env var auth
+- Load `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` from `.env`
 
 ## LLM Config (AG2)
 ```python
 LLM_CONFIG = {
     "config_list": [{
-        "model": "openai/gpt-4.1-mini",
-        "base_url": "https://5f5832nb90.execute-api.eu-central-1.amazonaws.com/v1",
-        "api_key": "no-key"
+        "model": os.getenv("LLM_MODEL"),
+        "base_url": os.getenv("LLM_BASE_URL"),
+        "api_key": os.getenv("LLM_API_KEY", "no-key")
     }],
     "cache_seed": None
 }

@@ -31,6 +31,10 @@ https://github.com/hoanlenguyen/AIEngineering-FinalProject
   ```
   pip install ag2 openai flask
   ```
+- Create a `.env` file in the project root using `.env.example`:
+  ```
+  cp .env.example .env
+  ```
 
 ### Run the Web UI (recommended)
 ```
@@ -55,10 +59,7 @@ python main.py --inline
 python main.py --project path/to/your_project/
 ```
 
-No API key is needed — the system uses the provided AWS proxy:
-`https://5f5832nb90.execute-api.eu-central-1.amazonaws.com/v1`
-
-Model used: `openai/gpt-4.1-mini`
+LLM connection settings are loaded from `.env`.
 
 ---
 
