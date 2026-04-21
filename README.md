@@ -18,6 +18,7 @@ Student number: 2506205
 ## 1. Project Name
 
 **CodeSentinel** — A Multi-Agent, Multi-Language Code Review Assistant with Web UI
+---
 Project link: 
 https://github.com/hoanlenguyen/AIEngineering-FinalProject
 ---
