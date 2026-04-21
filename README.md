@@ -117,6 +117,7 @@ python main.py --project path/to/project
 
 CodeSentinel routes the input through a small team of agents:
 
+- `User_Proxy` starts the review flow and executes the report-saving tool call
 - `Bug_Detector` checks for logic errors and runtime issues
 - `Style_Checker` checks coding style and convention problems
 - `Security_Auditor` checks for vulnerabilities and risky patterns
