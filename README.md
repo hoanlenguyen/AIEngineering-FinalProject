@@ -60,10 +60,10 @@ pip install -r requirements.txt
 Create a `.env` file from the example:
  
 
-Set these values in `.env`:
+Set the proxy URL in `.env`:
 
 ```env
-LLM_BASE_URL=https://5f5832nb90.execute-api.eu-central-1.amazonaws.com/v1
+LLM_BASE_URL=https://....
 ```
 
 The model and API key are defined in code:
